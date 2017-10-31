@@ -14,7 +14,7 @@ print(clf.support_vectors_)
 # get indices of support vectors（获取支持向量在数组中的位置）
 print(clf.support_)
 
-# get number of support vectors each class
+# get number of support vectors each class(分类分别找到了几个支持向量)
 print(clf.n_support_)
 
 #预测点的分类
