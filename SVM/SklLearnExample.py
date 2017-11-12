@@ -2,6 +2,8 @@ import numpy as np #算矩阵
 import pylab as pl #图形工具
 from sklearn import svm
 
+#画超平面（许多点）
+
 #we create 40 separable points
 np.random.seed(0)
 #20代表通过正态分布随机产生2维的20个点，(20,2)20行2列
