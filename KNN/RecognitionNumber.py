@@ -51,11 +51,14 @@ def readerCSV(file):
                 row = rows
         return row
 
-save = []
+
 #提取除第一个以外的数据
 def extract(row):
+    save = []
     for i in range(1,len(row)):
-        save.append(int(row[i]))
+        # save.append(int(row[i]))
+        save.append(row[i])
+    return save
 
 #矩阵转化为图片
 def matrixToImage(outFile,matrix):
@@ -67,11 +70,102 @@ def arrayToMatrix(arrayData,row,line):
     matrixData = np.array(arrayData).reshape(row, line)
     return matrixData
 
-newImgData = readerCSV('E:/MachineLearning/KNN/data/train.csv')
-extract(newImgData)
-print(len(save))
-matrixData = arrayToMatrix(save,28,28)
-matrixToImage('1.jpg',matrixData)
+#欧氏距离
+def euclideanMetric(vector1,vector2):
+    # return np.linalg.norm(vector1 - vector2)
+    return np.sqrt(np.sum(np.square(vector1 - vector2)))
+
+
+
+def runMatricToImage():
+    newImgData = readerCSV('E:/MachineLearning/KNN/data/train.csv')
+    save = extract(newImgData)
+    print(len(save))
+    matrixData = arrayToMatrix(save, 28, 28)
+    matrixToImage('1.jpg', matrixData)
+
+#####################################图片识别########################################
+#训练数据
+def creatDataSet(file):
+    imageData = []
+    labels = []
+    with open(file, 'rt') as csvfile:
+        reader = csv.reader(csvfile)
+        for i, rows in enumerate(reader):
+            labels.append(rows[0])
+            imageData.append(rows)
+        return imageData,labels
+
+#预测数据
+def preDataSet(file):
+    preImageData = []
+    with open(file, 'rt') as csvfile:
+        reader = csv.reader(csvfile)
+        for i, rows in enumerate(reader):
+            preImageData.append(rows)
+        del preImageData[0]
+        preImageData = manyDimToInt(preImageData)
+        return preImageData
+
+#Sring类型数组转int类型
+def stringToInt(array):
+    return [int(i) for i in array]
+
+#多维String类型数组转int型类型
+def  manyDimToInt(dimArray):
+    newData = []
+    for i in dimArray:
+        newData.append(stringToInt(i))
+    return newData
+
+#训练数据和预测数据比较
+def preNumber(preData,trainData):
+    preResult = []
+    # for i in range(28000):
+    for j in range(100):
+        del trainData[j][0]
+        result = int(euclideanMetric(np.array(preData),np.array(trainData[j])))
+        preResult.append(result)
+    return preResult
+
+
+# #删除数组的第一行
+# def delOneRow(array):
+#     del array
+
+#删除有特定字符的
+# def delSpecificStr(string):
+
+
+if __name__ == '__main__':
+
+    #################样本数据#############################
+    imageData, labels = creatDataSet("E:/MachineLearning/KNN/data/train.csv")
+    #删除有label
+    labels.remove('label')
+    # print(labels)
+    #删除imageData[0]行
+    del imageData[0]
+    newArray = manyDimToInt(imageData)
+
+    #######################预测数据######################
+    preImageData = preDataSet("E:/MachineLearning/KNN/data/test.csv")
+    # print(len(preImageData[0]))
+    # print(len(newArray[1]))
+    # print(newArray[1])
+
+    # a = np.array(newArray[0])
+    # b = np.array(newArray[2])
+    # distance = euclideanMetric(a, b)
+    distance = preNumber(preImageData[0],newArray)
+
+    distance.sort()
+    print(distance)
+
+
+
+
+
 
 
 
