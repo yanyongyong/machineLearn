@@ -49,7 +49,7 @@ Params:
     vocFrom - 词汇表
     dataSet - 词条
 Returns:
-    returnVec - 文档向量,词集模型
+    returnVec - 文档向量,词集模型（伯努利模型）
 Author:
     Yan Yong
 Data:
@@ -113,21 +113,23 @@ Data:
    2018/1/6 20:20 
 """
 def classify(plVect,p0Vect,dataSet,waitClssifyWord,insultPro):
-    pl = 1
-    p0 = 1
+    pl = 0
+    p0 = 0
     for word in waitClssifyWord:
         if word in dataSet:
-            pl *= plVect[dataSet.index(word)]
-            p0 *= p0Vect[dataSet.index(word)]
+            pl += plVect[dataSet.index(word)]
+            p0 += p0Vect[dataSet.index(word)]
         pl = pl + np.log(insultPro)
         p0 = p0 + np.log(1-insultPro)
+    print(p0)
+    print(pl)
     if pl > p0:
-        return 0
-    else:
         return 1
+    else:
+        return 0
 
 if __name__ == '__main__':
-    waitClssifyWord = ['my', 'food','dog']
+    waitClssifyWord = [ 'dalmation', 'is', 'so']
     trainMat = []
     postingList,classVec = loadDataSet()
     dataSet = creaeVocForm(postingList)
